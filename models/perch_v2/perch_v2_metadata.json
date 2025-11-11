@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "system": "CPU",
+  "embedding_size": 1536,
+  "sample_duration": 5,
+  "sample_rate": 32000,
+  "num_classes": 14795
+}
