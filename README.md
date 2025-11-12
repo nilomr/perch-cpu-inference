@@ -69,9 +69,9 @@ python visualize.py test-data/wren-test.wav output-onnx/predictions_partitioned/
 
 ## Model Details
 
-- **Perch v2**: Google's bird species classifier trained on millions of audio clips
+- **Perch v2**: Google's classifier pre-trained on a multi-taxa dataset ([Paper](https://arxiv.org/abs/2508.04665))
 - **Input**: 5-second audio chunks at 32kHz
-- **Output**: Top-10 (configurable) species predictions with logits
+- **Output**: Top-10 (configurable) species predictions with logits. These can be used to, e.g., estimate call density (see [Navine & Denton et. al., 2024](https://arxiv.org/html/2402.15360v1)).
 - **Embeddings**: 1536-dimensional feature vectors
 
 ## Performance
