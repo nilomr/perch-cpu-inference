@@ -142,5 +142,16 @@ output-onnx/
 *.checkpoint.json
 checkpoint.parquet
 
+
 # Large test data (uncomment if needed)
 test-data/
+output*
+models/perch_v2/perch_v2.onnx
+models/perch_v2/perch_v2.tflite
+
+# Runtime artifacts
+inference.pid
+inference.log
+nohup.out
+
+benchmark_results*.json
