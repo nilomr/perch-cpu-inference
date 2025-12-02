@@ -1,78 +1,107 @@
-# PhenoScale Bioacoustics - Perch v2 Inference
+# High-Performance bioacoustics inference
 
-High-performance bird species classification using Google's Perch v2 model for large-scale bioacoustics inference on CPUs. Work in progress.
+_Very_ high-performance bird species classification using Google's Perch v2 model for large-scale bioacoustics inference on CPUs.
+
+This repository provides optimized inference tools for running Perch v2 on bioacoustics data, with support for both ONNX and TFLite formats, very efficient parallel processing, and some basic visualization.
+
+![Example of 2D projection of resulting embeddings](./docs/temporal_embeddings.jpg)
+
+<small>Developed as part of the PhenoScale project, UKRI Frontiers grant EP/X024520/1 awarded to Ben Sheldon, University of Oxford.</small>
 
 ## Features
 
-- **ONNX Inference**: Optimized CPU inference
-- **TFLite Inference**: Lightweight deployment with parallel processing
+- **High-performance inference**: Optimized CPU inference with parallel processing; ONNX and TFLite model support
+- **Batch processing**: Large-scale dataset processing with checkpointing and resume functionality
+- **Visualization**: Spectrogram and prediction overlays for validating results
+- **Benchmarking**: Performance analysis tools
+- **Monitoring**: Background process management for long-running jobs
 
-## Quick Start
+## Quick start
 
-### Prerequisites
-
-### 1. Install Dependencies
+### 1. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Download or Compile Models
+### 2. Download or compile Models
 
 **ONNX Model:**
-Download the pre-optimized ONNX model:
 ```bash
 wget https://huggingface.co/justinchuby/Perch-onnx/resolve/main/perch_v2.onnx -P models/perch_v2/
 ```
 
-**TFLite Model:**
-Compile the model from TensorFlow Hub:
+**TFLite Model:** (optional, not tested as much)
 ```bash
 python perch-tflite-inference.py compile-model
 ```
 
-### 3. Run ONNX Inference
+Note: Models will be saved to `models/perch_v2/` directory.
+
+### 3. Run inference
 
 ```bash
-python perch-onnx-inference.py --audio-dir ./test-data --output-dir ./output-onnx
+# ONNX inference (recommended for performance)
+python perch-onnx-inference.py --audio-dir ./data/test-data --output-dir ./output
+
+# TFLite inference
+python perch-tflite-inference.py run-inference --audio-dir ./data/test-data
 ```
 
-### 4. Run TFLite Inference
-
-First, ensure the model is compiled (see step 2), then run inference:
+### 4. Visualize results (optional)
 
 ```bash
-python perch-tflite-inference.py run-inference ./test-data
+python scripts/visualization/visualize.py data/test-data/wren-test.wav output/predictions_partitioned/checkpoint_0000.csv --output visualization.png
 ```
 
-### 5. Visualize Results
-
-```bash
-python visualize.py test-data/wren-test.wav output-onnx/predictions_partitioned/checkpoint_0000.csv --output visualization.png
-```
-
-## Project Structure
+## Project structure
 
 ```
-├── perch-onnx-inference.py      # ONNX inference script
-├── perch-tflite-inference.py    # TFLite inference script
-├── visualize.py                 # Visualization tool
-├── models/
-│   └── perch_v2/               # Model directory (models downloaded separately)
-│       ├── perch_v2.onnx       # ONNX model (~750MB, download separately)
-│       ├── perch_v2.tflite     # TFLite model (compile using script)
-│       ├── classes.json        # Species classes
-│       └── metadata files
-├── test-data/                  # Sample audio files
-└── requirements.txt            # Python dependencies
+├── scripts/                    # Python scripts organized by function
+│   ├── inference/             # Inference scripts
+│   ├── benchmark/             # Benchmarking tools
+│   └── visualization/         # Visualization and reporting
+├── docs/                      # Documentation
+│   ├── README.md             # Detailed usage guide
+│   └── INFERENCE_README.md   # Inference runner guide
+├── data/                      # Test and sample data
+├── models/                    # Model files
+├── output/                    # Inference outputs
+├── results/                   # Benchmark results
+├── tools/                     # Shell scripts and utilities
+└── requirements.txt           # Python dependencies
 ```
 
-## Model Details
+## Documentation
+
+- **[Detailed use guide](docs/README.md)**: Complete installation, usage, and performance information
+- **[Inference runner guide](docs/INFERENCE_README.md)**: Instructions for batch processing large datasets
+
+## Model details
 
 - **Perch v2**: Google's classifier pre-trained on a multi-taxa dataset ([Paper](https://arxiv.org/abs/2508.04665))
 - **Input**: 5-second audio chunks at 32kHz
-- **Output**: Top-10 (configurable) species predictions with logits. These can be used to, e.g., estimate call density (see [Navine & Denton et. al., 2024](https://arxiv.org/html/2402.15360v1)).
-- **Embeddings**: 1536-dimensional feature vectors
+- **Output**: Species predictions and 1536-dimensional embeddings
+
+## Model sources & credits
+
+This project uses optimized versions of Google's Perch v2 model prepared by the following contributors:
+
+### ONNX model
+- **Prepared by**: Justin Chu ([@justinchuby](https://github.com/justinchuby))
+- **Source**: [Hugging Face - Perch-onnx](https://huggingface.co/justinchuby/Perch-onnx/tree/main)
+- **Description**: Manually optimized ONNX version for improved CPU inference performance
+
+### TFLite model
+- **Prepared by**: Lapp, S., and Kitzes, J. (2025)
+- **Citation**: "Bioacoustics Model Zoo version 0.12.2"
+- **Source**: [Bioacoustics Model Zoo](https://github.com/kitzeslab/bioacoustics-model-zoo)
+- **Description**: Compiled from TensorFlow Hub for lightweight deployment
+
+Please cite these if you use this repository in your research.
+
+**Note**: The original Perch v2 model was developed by Google researchers. This project only provides optimized inference implementations.
+
 
 ## Performance
 
@@ -95,59 +124,6 @@ python visualize.py test-data/wren-test.wav output-onnx/predictions_partitioned/
 | 11 | 2 | 8 | 45.2±6.2 | 2.45 | **146.8x** | 142% | 4,752 |
 | 12 | 2 | 16 | 44.8±1.5 | 2.43 | **145.6x** | 135% | 5,544 |
 
-## Usage Examples
-
-### Batch Processing Large Datasets
-
-```bash
-# ONNX with 32 workers, float16 compression
-python perch-onnx-inference.py \
-  --audio-dir /path/to/audio \
-  --output-dir ./results \
-  --workers 32 \
-  --batch-size 32 \
-  --float16 \
-  --checkpoint-interval 50
-```
-
-### Benchmarking
-
-```bash
-# Test different worker counts
-python perch-tflite-inference.py benchmark ./test-data
-```
-
-## Output Formats
-
-### Embeddings (Parquet)
-- Partitioned by checkpoint_id
-- Columns: file, chunk_idx, start_time, end_time, emb_0..emb_1535
-
-### Predictions (CSV)
-- Top-10 species per 5-second chunk
-- Columns: file, start_time, end_time, top1..top10, score1..score10
-
-## Visualization
-
-- Spectrogram (0-12kHz)
-- Time-aligned predictions table
-
-## Dependencies
-
-Key packages, loosely:
-
-- `onnxruntime` - ONNX inference
-- `tensorflow` - TFLite inference
-- `pyarrow` - Parquet storage
-- `librosa` - Audio processing
-- `matplotlib` - Visualization
-- `rich` - Progress bars
-- `typer` - CLI interface
-
-## Model Sources
-
-- ONNX model: Manually optimized onnx version https://huggingface.co/justinchuby/Perch-onnx/tree/main by [Justin Chu](https://github.com/justinchuby)
-- TFLite model: Compiled from [TensorFlow Hub](https://github.com/kitzeslab/bioacoustics-model-zoo/blob/main/bioacoustics_model_zoo/perch_v2.py) in the bioacoustics mdoel zoo, compiled by Lapp, S., and Kitzes, J., 2025 ("Bioacoustics Model Zoo version 0.12.2". https://github.com/kitzeslab/bioacoustics-model-zoo).
 
 ## Contributing
 
