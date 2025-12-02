@@ -1,6 +1,6 @@
-# High-Performance bioacoustics inference
+# High-performance bioacoustics inference
 
-_Very_ high-performance bird species classification using Google's Perch v2 model for large-scale bioacoustics inference on CPUs.
+_Very_ high-performance acoustic data embedding extraction and classification using Google's Perch v2 model for large-scale bioacoustics inference on CPUs.
 
 This repository provides optimized inference tools for running Perch v2 on bioacoustics data, with support for both ONNX and TFLite formats, very efficient parallel processing, and some basic visualization.
 
