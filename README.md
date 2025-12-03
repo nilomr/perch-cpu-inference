@@ -2,7 +2,7 @@
 
 _Very_ high-performance acoustic data embedding extraction and classification using Google's Perch v2 model for large-scale bioacoustics inference on CPUs.
 
-This repository provides optimized inference tools for running Perch v2 on bioacoustics data, with support for both ONNX and TFLite formats, very efficient parallel processing, and some basic visualization.
+This repository provides optimized inference tools for running Perch v2 on soundscape data, with support for both ONNX and TFLite formats, very efficient parallel processing, and some basic visualization.
 
 ![Example of 2D projection of resulting embeddings](./docs/temporal_embeddings.jpg)
 
