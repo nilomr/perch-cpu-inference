@@ -49,7 +49,7 @@ LOG_FILE="'"$LOG_FILE"'"
         
         echo "[$(date +%H:%M:%S)] Starting: $site_name"
         
-        if python ../perch-onnx-inference.py \
+        if python scripts/inference/perch-onnx-inference.py \
             --audio-dir "$site_dir" \
             --output-dir "$site_output" \
             --workers 32 \
