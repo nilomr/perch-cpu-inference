@@ -315,13 +315,11 @@ def calculate_file_group_size(max_ram_gb: float, avg_chunks_per_file: float) -> 
 @app.callback(invoke_without_command=True)
 def main(
     audio_dir: Path = typer.Option(..., "--audio-dir", "-d", help="Audio directory"),
-    model_path: Path = typer.Option(
-        "./models/perch_v2/perch_v2.onnx", help="ONNX model"
-    ),
+    model_path: Path = typer.Option("models/perch_v2/perch_v2.onnx", help="ONNX model"),
     classes_json: Path = typer.Option(
-        "./models/perch_v2/classes.json", help="Classes JSON"
+        "models/perch_v2/classes.json", help="Classes JSON"
     ),
-    output_dir: Path = typer.Option("./output-onnx", help="Output directory"),
+    output_dir: Path = typer.Option("output", help="Output directory"),
     batch_size: int = typer.Option(16, "--batch-size", "-b", help="Batch size"),
     workers: int = typer.Option(4, "--workers", "-w", help="Inference workers"),
     loader_threads: int = typer.Option(
@@ -348,10 +346,10 @@ def main(
 
     Example:
         # Use 20GB RAM, 16 CPUs total
-        python perch-onnx-inference.py --audio-dir ./audio --workers 4 --max-cpus 16 --max-ram-gb 20
+        python scripts/inference/perch-onnx-inference.py --audio-dir ./audio --workers 4 --max-cpus 16 --max-ram-gb 20
 
         # Use 50GB RAM, all CPUs
-        python perch-onnx-inference.py --audio-dir ./audio --workers 8 --max-ram-gb 50
+        python scripts/inference/perch-onnx-inference.py --audio-dir ./audio --workers 8 --max-ram-gb 50
     """
     output_dir.mkdir(exist_ok=True)
     checkpoint_path = output_dir / ".checkpoint.json"

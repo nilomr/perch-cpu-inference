@@ -322,7 +322,7 @@ def parallel_inference_optimized(
 
 @app.command()
 def compile_model(
-    save_path: Path = typer.Option("./models/perch_v2", help="Model save directory"),
+    save_path: Path = typer.Option("models/perch_v2", help="Model save directory"),
     use_cpu: bool = typer.Option(True, help="Use CPU model"),
 ):
     """Compile Perch v2 to TFLite."""
@@ -338,9 +338,9 @@ def compile_model(
 def run_inference(
     audio_dir: Path = typer.Option(..., help="Audio directory"),
     model_path: Path = typer.Option(
-        "./models/perch_v2/perch_v2.tflite", help="Model path"
+        "models/perch_v2/perch_v2.tflite", help="Model path"
     ),
-    output_dir: Path = typer.Option("./output", help="Output directory"),
+    output_dir: Path = typer.Option("output", help="Output directory"),
     num_workers: Optional[int] = typer.Option(None, help="Number of workers"),
     file_pattern: str = typer.Option("*.wav", help="File pattern"),
     save_embeddings: bool = typer.Option(True, help="Save embeddings"),
@@ -431,7 +431,7 @@ def run_inference(
 def benchmark(
     audio_dir: Path = typer.Option(..., help="Test audio directory"),
     model_path: Path = typer.Option(
-        "./models/perch_v2/perch_v2.tflite", help="Model path"
+        "models/perch_v2/perch_v2.tflite", help="Model path"
     ),
     num_files: int = typer.Option(76, help="Files to benchmark"),
     worker_counts: str = typer.Option("8,16,24,32,40", help="Worker counts"),
